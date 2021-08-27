@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  eureka-1:
+    image: nelson/discovery-server
+    build:
+      context: ../../..
+      dockerfile: src/main/resources/Dockerfile
+    container_name: eureka1
+    hostname: eureka1
+    ports:
+      - 8081:8761
+    restart: unless-stopped  
+    networks:
+      static:
+        #ipv4_address: 127.0.0.1
+        aliases:
+          - eureka1
+    environment:
+      eureka.instance.hostname: eureka1
+      eureka.client.serviceUrl.defaultZone: http://srv-app-discovery:generat3aRand0mStrin5@eureka2:8761/eureka/
+  eureka-2:
+    image: nelson/discovery-server
+    container_name: eureka2
+    hostname: eureka2
+    ports:
+      - 8082:8761
+    restart: unless-stopped  
+    networks:
+      static:
+        #ipv4_address: 127.0.0.1
+        aliases:
+          - eureka2
+    environment:
+      eureka.instance.hostname: eureka2
+      eureka.client.serviceUrl.defaultZone: http://srv-app-discovery:generat3aRand0mStrin5@eureka1:8761/eureka/
+networks:
+  static:
+    external:
+      name: static
